@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, VARCHAR, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship
+from src.models import Combo
+
 # from database import Base
 
 class Combo(Base):
@@ -16,3 +18,5 @@ class Combo(Base):
         self.Item_id = Item_id
         self.Nome = Nome
         self.Promocao = Promocao
+
+__all__ = ["Combo"]

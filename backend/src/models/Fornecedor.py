@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, VARCHAR
 from sqlalchemy.orm import relationship
+from src.models import Fornecedor
+
 # from database import Base
 
 class Fornecedor(Base):
@@ -14,3 +16,5 @@ class Fornecedor(Base):
     def __init__(self, Nome=None, Contato=None):
         self.Nome = Nome
         self.Contato = Contato
+
+__all__ = ["Fornecedor"]

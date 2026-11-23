@@ -1,5 +1,8 @@
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
+from src.models import Avaliacao
+
+__all__ = ["Avaliacao"]
 
 class Avaliacao(Base):
     __tablename__ = 'Avaliacao'

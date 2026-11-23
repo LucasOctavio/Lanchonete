@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, VARCHAR, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship
+from src.models import Entrega
+
 # from database import Base
 
 class Entrega(Base):
@@ -19,3 +21,5 @@ class Entrega(Base):
         self.Pedido_id = Pedido_id
         self.Endereco = Endereco
         self.Taxa = Taxa
+
+__all__ = ["Entrega"]

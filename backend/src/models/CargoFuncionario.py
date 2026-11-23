@@ -1,5 +1,9 @@
 from sqlalchemy import Column, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from src.models import CargoFuncionario
+
+__all__ = ["CargoFuncionario"]
+
 # from database import Base
 
 class CargoFuncionario(Base):

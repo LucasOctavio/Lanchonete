@@ -1,0 +1,51 @@
+const API_URL = import.meta.env.VITE_API_URL || '/api'
+
+async function request(path, options = {}) {
+  const response = await fetch(`${API_URL}${path}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+    ...options,
+  })
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}))
+    throw new Error(body.detail || `Erro ${response.status}`)
+  }
+
+  if (response.status === 204) return null
+  return response.json()
+}
+
+export const api = {
+  health: () => request('/health'),
+  categories: {
+    list: () => request('/categorias'),
+    create: (Nome) => request('/categorias', { method: 'POST', body: JSON.stringify({ Nome }) }),
+  },
+  products: {
+    list: () => request('/produtos'),
+    create: (data) => request('/produtos', { method: 'POST', body: JSON.stringify(data) }),
+  },
+  tables: {
+    list: () => request('/mesas'),
+  },
+  orders: {
+    list: () => request('/pedidos'),
+    create: (data) => request('/pedidos/completo', { method: 'POST', body: JSON.stringify(data) }),
+    get: (id) => request(`/pedidos/${id}`),
+    status: (id, status) => request(`/pedidos/${id}/status`, { method: 'POST', body: JSON.stringify({ status }) }),
+    myOrders: (name) => request(`/pedidos/meus?nome=${encodeURIComponent(name)}`),
+  },
+  ingredients: {
+    list: () => request('/ingredientes'),
+    create: (data) => request('/ingredientes', { method: 'POST', body: JSON.stringify(data) }),
+    restock: (id, quantidade) => request(`/ingredientes/${id}/repor`, { method: 'POST', body: JSON.stringify({ quantidade }) }),
+  },
+  report: () => request('/relatorios/vendas'),
+  clients: {
+    register: (data) => request('/clientes/cadastro', { method: 'POST', body: JSON.stringify(data) }),
+    login: (data) => request('/clientes/login', { method: 'POST', body: JSON.stringify(data) }),
+  },
+}

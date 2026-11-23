@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, VARCHAR, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship
 # from database import Base
+from src.models import Adicional
 
 class Adicional(Base):
     __tablename__ = 'Adicional'
@@ -16,3 +17,5 @@ class Adicional(Base):
         self.Item_id = Item_id
         self.Nome = Nome
         self.Preco = Preco
+
+__all__ = ["Adicional"]

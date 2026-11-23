@@ -1,5 +1,9 @@
 from sqlalchemy import Column, Integer, VARCHAR, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from src.models import Pedido
+
+__all__ = ["Pedido"]
+
 # from database import Base
 
 class Pedido(Base):

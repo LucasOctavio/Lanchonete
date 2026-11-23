@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, VARCHAR, DateTime, ForeignKey, Table
 from sqlalchemy.orm import relationship
-# from database import Base
+from src.models import Promocao, promocao_produto
+
+__all__ = ["Promocao", "promocao_produto"]
 
 promocao_produto = Table(
     'Promocao_Produto',

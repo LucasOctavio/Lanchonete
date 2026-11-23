@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, VARCHAR
 from sqlalchemy.orm import relationship
+from src.models import Categoria
+
 # from database import Base
 
 class Categoria(Base):
@@ -12,3 +14,5 @@ class Categoria(Base):
 
     def __init__(self, Nome=None):
         self.Nome = Nome
+
+__all__ = ["Categoria"]

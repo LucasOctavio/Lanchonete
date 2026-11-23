@@ -1,5 +1,9 @@
 from sqlalchemy import Column, Integer, VARCHAR, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship
+from src.models import Produto
+
+__all__ = ["Produto"]
+
 # from database import Base
 # from models.Promocao import promocao_produto
 

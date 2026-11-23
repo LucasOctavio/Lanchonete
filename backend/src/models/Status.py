@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, VARCHAR, DateTime
 from sqlalchemy.orm import relationship
+from src.models import Status
+
 # from database import Base
 
 class Status(Base):
@@ -14,3 +16,5 @@ class Status(Base):
     def __init__(self, Status, DataHora):
         self.Status = Status
         self.DataHora = DataHora
+
+__all__ = ["Status"]

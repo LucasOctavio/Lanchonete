@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from src.models import Historico
+
 # from database import Base
 
 class Historico(Base):
@@ -14,3 +16,5 @@ class Historico(Base):
     def __init__(self, Pedido_id, DataHora=None):
         self.Pedido_id = Pedido_id
         self.DataHora = DataHora
+
+__all__ = ["Historico"]

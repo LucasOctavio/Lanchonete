@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, VARCHAR, ForeignKey
 from sqlalchemy.orm import relationship
-# from database import Base
+from src.models import IngredienteProduto
+
+__all__ = ["IngredienteProduto"]
 
 class IngredienteProduto(Base):
     __tablename__ = 'Ingrediente_Produto'

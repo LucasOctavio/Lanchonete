@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
+from src.models import Item
 # from database import Base
 
 class Item(Base):
@@ -18,3 +19,5 @@ class Item(Base):
         self.Produto_id = Produto_id
         self.Produto_Categoria_id = Produto_Categoria_id
         self.Quantidade = Quantidade
+
+__all__ = ["Item"]

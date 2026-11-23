@@ -1,5 +1,9 @@
 from sqlalchemy import Column, Integer, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship
+from src.models import Pagamento
+
+__all__ = ["Pagamento"]
+
 # from database import Base
 
 class Pagamento(Base):

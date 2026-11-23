@@ -1,5 +1,9 @@
 from sqlalchemy import Column, Integer, VARCHAR
 from sqlalchemy.orm import relationship
+from src.models import Cargo
+
+__all__ = ["Cargo"]
+
 # from database import Base
 
 class Cargo(Base):

@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, VARCHAR, ForeignKey
 from sqlalchemy.orm import relationship
+from src.models import Cliente
+
 # from database import Base
 
 class Cliente(Base):
@@ -19,3 +21,5 @@ class Cliente(Base):
         self.Nome = Nome
         self.Endereco = Endereco
         self.Contato = Contato
+
+__all__ = ["Cliente"]

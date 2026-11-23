@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, VARCHAR, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship
-# from database import Base
+from src.models import Ingrediente
 
 class Ingrediente(Base):
     __tablename__ = 'Ingrediente'
@@ -19,3 +19,5 @@ class Ingrediente(Base):
         self.Nome = Nome
         self.QtdEstoque = QtdEstoque
         self.UniMedida = UniMedida
+
+__all__ = ["Ingrediente"]

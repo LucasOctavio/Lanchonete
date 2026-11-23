@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, VARCHAR, DECIMAL, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-# from database import Base
+from src.models import Cupom
+
+__all__ = ["Cupom"]
 
 class Cupom(Base):
     __tablename__ = 'Cupom'

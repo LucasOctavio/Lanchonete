@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, VARCHAR
 from sqlalchemy.orm import relationship
+from src.models import Funcionario
+
 # from database import Base
 
 class Funcionario(Base):
@@ -13,3 +15,5 @@ class Funcionario(Base):
 
     def __init__(self, Nome=None):
         self.Nome = Nome
+
+__all__ = ["Funcionario"]
