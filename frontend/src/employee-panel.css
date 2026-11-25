@@ -1,0 +1,48 @@
+@media (max-width: 720px) {
+  .app-shell .main-nav {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.brand .brand-mark {
+  display: grid;
+  flex: 0 0 42px;
+  place-items: center;
+  margin: 0;
+  color: #fff;
+  font-size: inherit;
+  line-height: 1;
+}
+
+.brand .brand-mark svg {
+  display: block;
+}
+
+.order-client-detail {
+  display: block;
+  margin-top: 4px;
+  color: #858d9a;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.order-status-received,
+.order-status-delivered {
+  background: #edf1f5;
+  color: #667184;
+}
+
+.order-status-preparing {
+  background: #fff2cc;
+  color: #8a6500;
+}
+
+.order-status-ready {
+  background: #e2f5e8;
+  color: #277a45;
+}
+
+.order-status-cancelled {
+  background: #fde8e7;
+  color: #ad3632;
+}

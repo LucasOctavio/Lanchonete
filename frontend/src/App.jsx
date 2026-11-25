@@ -2,11 +2,16 @@ import { useEffect, useState } from 'react'
 import { api } from './api'
 import AuthPage from './pages/AuthPage'
 import ClientMenuPage from './pages/ClientMenuPage'
+import EmployeePage from './pages/EmployeePage'
 import './App.css'
 import './client.css'
+import './client-interactions.css'
 
 const getSavedUser = () => {
-  try { return JSON.parse(localStorage.getItem('lanchonete_user')) } catch { return null }
+  try {
+    const user = JSON.parse(localStorage.getItem('lanchonete_user'))
+    return user?.role === 'admin' ? null : user
+  } catch { return null }
 }
 
 const getSavedCart = () => {
@@ -37,7 +42,7 @@ export default function App() {
   }, [cart])
 
   useEffect(() => {
-    if (!user) return
+    if (!user || user.role === 'admin') return
     Promise.all([
       api.products.list().catch(() => []),
       api.categories.list().catch(() => []),
@@ -54,7 +59,11 @@ export default function App() {
       const data = authMode === 'register'
         ? await api.clients.register(form)
         : await api.clients.login({ email: form.email, senha: form.senha })
-      localStorage.setItem('lanchonete_user', JSON.stringify(data))
+      if (data.role === 'admin') {
+        localStorage.removeItem('lanchonete_user')
+      } else {
+        localStorage.setItem('lanchonete_user', JSON.stringify(data))
+      }
       setUser(data)
     } catch (error) {
       setAuthError(error.message)
@@ -66,6 +75,11 @@ export default function App() {
   function logout() {
     localStorage.removeItem('lanchonete_user')
     setUser(null)
+    setAuthMode('login')
+  }
+
+  if (user?.role === 'admin') {
+    return <EmployeePage user={user} onLogout={logout} />
   }
 
   function addToCart(product) {
@@ -93,19 +107,25 @@ export default function App() {
     ))
   }
 
-  async function checkout() {
+  async function checkout(details) {
     try {
       await api.orders.create({
-        tipo: 'delivery',
+        tipo: details.tipo,
         itens: cart.map((item) => ({ produto_id: item.id, quantidade: item.quantidade, adicionais: [] })),
-        cliente: { Nome: user.nome, Contato: user.telefone },
+        cliente: {
+          Nome: user.nome,
+          Contato: details.telefone,
+          Endereco: details.tipo === 'delivery' ? details.endereco : null,
+        },
         pagamento: { pix: cart.reduce((sum, item) => sum + Number(item.Preco || 0) * item.quantidade, 0) },
       })
       setCart([])
       setCheckoutMessage('Pedido realizado com sucesso!')
       window.setTimeout(() => setCheckoutMessage(''), 4000)
+      return true
     } catch (error) {
       setCheckoutMessage(error.message)
+      return false
     }
   }
 

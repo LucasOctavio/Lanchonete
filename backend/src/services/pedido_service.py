@@ -5,7 +5,10 @@ from typing import Any
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from src.models import Avaliacao, Adicional, Cliente, Historico, Item, Pagamento, Pedido, Produto, Status
+from src.models import (
+    Adicional, Avaliacao, CancelamentoPedido, Cliente, Historico, Item,
+    Pagamento, Pedido, Produto, Status,
+)
 from src.services.serialization import to_dict
 
 
@@ -75,7 +78,14 @@ def criar_pedido(db: Session, payload: dict[str, Any]) -> dict:
 
 
 def listar_pedidos(db: Session, skip: int, limit: int) -> list[dict]:
-    return [to_dict(pedido) for pedido in db.query(Pedido).offset(skip).limit(limit).all()]
+    pedidos = (
+        db.query(Pedido)
+        .order_by(Pedido.DataHora.desc(), Pedido.id.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+    return [buscar_pedido(db, pedido.id) for pedido in pedidos]
 
 
 def buscar_pedido(db: Session, pedido_id: int) -> dict:
@@ -98,9 +108,22 @@ def buscar_pedido(db: Session, pedido_id: int) -> dict:
 
     status_pedido = db.get(Status, pedido.Status_id) if pedido.Status_id else None
     data["status"] = status_pedido.Status if status_pedido else "recebido"
+    cancelamento = (
+        db.query(CancelamentoPedido)
+        .filter(CancelamentoPedido.Pedido_id == pedido_id)
+        .order_by(CancelamentoPedido.DataHora.desc(), CancelamentoPedido.id.desc())
+        .first()
+    )
+    data["motivo_cancelamento"] = (
+        cancelamento.Motivo if cancelamento and data["status"] == "cancelado" else None
+    )
 
     cliente = db.query(Cliente).filter(Cliente.Pedido_id == pedido_id).first()
-    data["cliente"] = {"Nome": cliente.Nome, "Contato": cliente.Contato} if cliente else None
+    data["cliente"] = {
+        "Nome": cliente.Nome,
+        "Endereco": cliente.Endereco,
+        "Contato": cliente.Contato,
+    } if cliente else None
     return data
 
 
@@ -132,10 +155,19 @@ def excluir_pedido(db: Session, pedido_id: int) -> dict:
     return {"deleted": True}
 
 
-def atualizar_status(db: Session, pedido_id: int, nome_status: str) -> dict:
+def atualizar_status(
+    db: Session,
+    pedido_id: int,
+    nome_status: str,
+    motivo_cancelamento: str | None = None,
+) -> dict:
     pedido = db.get(Pedido, pedido_id)
     if not pedido:
         raise HTTPException(404, "Pedido não encontrado")
+    motivo = (motivo_cancelamento or "").strip()
+    if nome_status == "cancelado" and not motivo:
+        raise HTTPException(422, "Informe o motivo do cancelamento")
+
     novo_status = db.query(Status).filter(Status.Status == nome_status).order_by(Status.id.desc()).first()
     if not novo_status:
         novo_status = Status(Status=nome_status, DataHora=datetime.utcnow())
@@ -143,6 +175,12 @@ def atualizar_status(db: Session, pedido_id: int, nome_status: str) -> dict:
         db.flush()
     pedido.Status_id = novo_status.id
     db.add(Historico(Pedido_id=pedido_id, DataHora=datetime.utcnow()))
+    if nome_status == "cancelado":
+        db.add(CancelamentoPedido(
+            Pedido_id=pedido_id,
+            Motivo=motivo,
+            DataHora=datetime.utcnow(),
+        ))
     db.commit()
     db.refresh(pedido)
     return to_dict(pedido)

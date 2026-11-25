@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ClientBrand from '../components/ClientBrand'
 
 export default function AuthPage({ mode, onModeChange, onSubmit, loading, error }) {
   const [form, setForm] = useState({ nome: '', email: '', telefone: '', senha: '' })
@@ -11,8 +12,7 @@ export default function AuthPage({ mode, onModeChange, onSubmit, loading, error 
     <main className="auth-page">
       <section className="auth-brand">
         <div className="auth-brand-inner">
-          <div className="auth-logo">S</div>
-          <span className="auth-kicker">Sabor &amp; Cia</span>
+          <ClientBrand className="auth-client-brand" />
           <h1>Seu lanche favorito,<br />sempre perto de você.</h1>
           <p>Monte seu pedido, acompanhe a entrega e aproveite os melhores sabores.</p>
         </div>
@@ -42,7 +42,9 @@ export default function AuthPage({ mode, onModeChange, onSubmit, loading, error 
 
           {error && <div className="auth-error">{error}</div>}
 
-          <button className="auth-submit" type="submit" disabled={loading}>{loading ? 'Aguarde...' : mode === 'login' ? 'Entrar' : 'Criar conta'}</button>
+          <button className="auth-submit" type="submit" disabled={loading}>
+            {loading ? 'Aguarde...' : mode === 'login' ? 'Entrar' : 'Criar conta'}
+          </button>
 
           <p className="auth-switch">
             {mode === 'login' ? 'Ainda não tem conta?' : 'Já possui uma conta?'}{' '}

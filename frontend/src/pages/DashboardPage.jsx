@@ -1,11 +1,12 @@
 import { Icon } from '../components/Icon'
+import { ORDER_STATUS_LABELS, ORDER_TYPE_LABELS, orderStatusClass } from '../orderDisplay'
 
 const money = (value) => new Intl.NumberFormat('pt-BR', {
   style: 'currency', currency: 'BRL',
 }).format(Number(value || 0))
 
 export default function DashboardPage({ report, products, orders, ingredients }) {
-  const recent = orders.slice(-5).reverse()
+  const recent = orders.filter((order) => String(order.status || '').toLowerCase() !== 'cancelado').slice(0, 5)
   const cards = [
     { label: 'Pedidos', value: report.total_pedidos || orders.length, icon: 'bag', color: 'orange' },
     { label: 'Receita estimada', value: money(report.receita_estimada), icon: 'chart', color: 'green' },
@@ -43,10 +44,10 @@ export default function DashboardPage({ report, products, orders, ingredients })
               <div className="order-row" key={order.id}>
                 <div className="order-number">#{order.id}</div>
                 <div className="order-description">
-                  <strong>Pedido #{order.id}</strong>
-                  <span>{order.Tipo || 'Local'} · Mesa {order.Mesa_id || '-'}</span>
+                  <strong>{order.cliente?.Nome || `Pedido #${order.id}`}</strong>
+                  <span>{ORDER_TYPE_LABELS[order.Tipo] || order.Tipo || 'Local'} · {order.itens?.length || 0} itens</span>
                 </div>
-                <span className="status pending">Em aberto</span>
+                <span className={orderStatusClass(order.status)}>{ORDER_STATUS_LABELS[order.status] || order.status || 'Recebido'}</span>
               </div>
             )) : <div className="empty-state">Nenhum pedido registrado.</div>}
           </div>

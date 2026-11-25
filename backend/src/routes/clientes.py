@@ -1,9 +1,11 @@
+import hmac
 from hashlib import sha256
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.orm import Session
 
+from src.config import ADMIN_EMAIL, ADMIN_PASSWORD
 from src.dependencias import get_db
 from src.models import UsuarioCliente
 
@@ -28,6 +30,8 @@ def hash_senha(senha: str) -> str:
 
 @router.post("/cadastro", status_code=status.HTTP_201_CREATED)
 def cadastrar(payload: CadastroCliente, db: Session = Depends(get_db)):
+    if str(payload.email).lower() == ADMIN_EMAIL.lower():
+        raise HTTPException(status_code=409, detail="Este e-mail já pertence ao administrador")
     if db.query(UsuarioCliente).filter(UsuarioCliente.Email == payload.email).first():
         raise HTTPException(status_code=409, detail="Este e-mail já está cadastrado")
     usuario = UsuarioCliente(
@@ -44,6 +48,11 @@ def cadastrar(payload: CadastroCliente, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(payload: LoginCliente, db: Session = Depends(get_db)):
+    email_valido = hmac.compare_digest(str(payload.email).lower(), ADMIN_EMAIL.lower())
+    senha_valida = hmac.compare_digest(payload.senha, ADMIN_PASSWORD)
+    if email_valido and senha_valida:
+        return {"nome": "Administrador", "email": ADMIN_EMAIL, "role": "admin"}
+
     usuario = db.query(UsuarioCliente).filter(UsuarioCliente.Email == str(payload.email)).first()
     if not usuario or usuario.Senha != hash_senha(payload.senha):
         raise HTTPException(status_code=401, detail="E-mail ou senha inválidos")

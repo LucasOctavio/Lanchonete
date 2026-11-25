@@ -27,21 +27,30 @@ export const api = {
   products: {
     list: () => request('/produtos'),
     create: (data) => request('/produtos', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id, data) => request(`/produtos/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  },
+  suppliers: {
+    list: () => request('/fornecedores'),
   },
   tables: {
     list: () => request('/mesas'),
   },
   orders: {
-    list: () => request('/pedidos'),
+    list: (skip = 0, limit = 100) => request(`/pedidos?skip=${skip}&limit=${limit}`),
     create: (data) => request('/pedidos/completo', { method: 'POST', body: JSON.stringify(data) }),
     get: (id) => request(`/pedidos/${id}`),
-    status: (id, status) => request(`/pedidos/${id}/status`, { method: 'POST', body: JSON.stringify({ status }) }),
+    status: (id, status, motivo) => request(`/pedidos/${id}/status`, {
+      method: 'POST',
+      body: JSON.stringify({ status, ...(motivo ? { motivo } : {}) }),
+    }),
     myOrders: (name) => request(`/pedidos/meus?nome=${encodeURIComponent(name)}`),
   },
   ingredients: {
     list: () => request('/ingredientes'),
     create: (data) => request('/ingredientes', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id, data) => request(`/ingredientes/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     restock: (id, quantidade) => request(`/ingredientes/${id}/repor`, { method: 'POST', body: JSON.stringify({ quantidade }) }),
+    history: (skip = 0, limit = 100) => request(`/ingredientes/historico?skip=${skip}&limit=${limit}`),
   },
   report: () => request('/relatorios/vendas'),
   clients: {

@@ -41,6 +41,14 @@ class Ingrediente(Base):
     produtos = relationship("IngredienteProduto", back_populates="ingrediente")
 
 
+class ReposicaoEstoque(Base):
+    __tablename__ = "Reposicao_Estoque"
+    id = Column(Integer, primary_key=True, index=True)
+    Ingrediente_id = Column(Integer, ForeignKey("Ingrediente.id"), nullable=False)
+    Quantidade = Column(DECIMAL(10, 3), nullable=False)
+    DataHora = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
 class Produto(Base):
     __tablename__ = "Produto"
     id = Column(Integer, primary_key=True, index=True)
@@ -93,6 +101,14 @@ class Pedido(Base):
     Status_id = Column(Integer, ForeignKey("Status.id"), nullable=True)
     Cupom_Codigo = Column(String(20), ForeignKey("Cupom.Codigo"), nullable=True)
     Tipo = Column(String(20), nullable=True)
+    DataHora = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+class CancelamentoPedido(Base):
+    __tablename__ = "Cancelamento_Pedido"
+    id = Column(Integer, primary_key=True, index=True)
+    Pedido_id = Column(Integer, ForeignKey("Pedido.id", ondelete="CASCADE"), nullable=False)
+    Motivo = Column(String(500), nullable=False)
     DataHora = Column(DateTime, nullable=False, default=datetime.utcnow)
 
 
@@ -201,8 +217,8 @@ class Promocao(Base):
 
 
 ALL_MODELS = (
-    Categoria, Fornecedor, Ingrediente, Produto, IngredienteProduto, Mesa,
-    Status, Cupom, Pedido, Cliente, UsuarioCliente, Pagamento, Avaliacao, Historico,
-    Funcionario, Cargo, CargoFuncionario, Entrega, Item, Adicional, Combo,
-    Promocao,
+    Categoria, Fornecedor, Ingrediente, ReposicaoEstoque, Produto,
+    IngredienteProduto, Mesa, Status, Cupom, Pedido, CancelamentoPedido,
+    Cliente, UsuarioCliente, Pagamento, Avaliacao, Historico, Funcionario,
+    Cargo, CargoFuncionario, Entrega, Item, Adicional, Combo, Promocao,
 )

@@ -47,7 +47,7 @@ def excluir(pedido_id: int, db: Session = Depends(get_db)):
 
 @router.post("/{pedido_id}/status")
 def atualizar_status(pedido_id: int, payload: StatusUpdate, db: Session = Depends(get_db)):
-    return pedido_service.atualizar_status(db, pedido_id, payload.status)
+    return pedido_service.atualizar_status(db, pedido_id, payload.status, payload.motivo)
 
 
 @router.post("/{pedido_id}/avaliacao", status_code=status.HTTP_201_CREATED)
